@@ -1,112 +1,246 @@
 <!doctype html>
-<html><head><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Anime-Girl Fighting</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#090a12;color:#fff;font-family:Arial,sans-serif;overflow:hidden}
-#app{height:100vh;display:flex;flex-direction:column;background:radial-gradient(circle at 50% 10%,#29203d,#090a12 65%)}
-header{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:#11121c}
-h1{font-size:20px;margin:0}.gold{color:#ffd45a}
-button{border:0;border-radius:12px;padding:10px 14px;background:#25283b;color:white;font-weight:bold}
-button:active{transform:scale(.96)}#menu,#fight{flex:1;display:flex;align-items:center;justify-content:center}
-#menu{flex-direction:column;gap:14px}.roster{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-width:700px;width:94%}
-.card{padding:12px;background:#171a28;border:1px solid #34384d;border-radius:14px;text-align:center;cursor:pointer}
-.card b{display:block;margin-bottom:5px}.tag{font-size:11px;color:#b7b9c8}.selected{outline:2px solid #ff4f9a}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{background:#090a12;color:#fff;font-family:Arial,sans-serif}
+button{border:0;border-radius:12px;padding:11px 15px;background:#272b40;color:#fff;font-weight:bold;font-size:14px}
+button:active{transform:scale(.96)}
+#app{height:100%;display:flex;flex-direction:column;background:radial-gradient(circle at 50% 10%,#29203d,#090a12 65%)}
+header{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;background:#11121c;gap:8px}
+h1{font-size:19px;margin:0}.gold{color:#ffd45a}
+#coins{font-size:13px;margin-right:6px}
+#menu,#fight{flex:1;display:flex;align-items:center;justify-content:center}
+#menu{flex-direction:column;gap:14px;overflow:auto}
+#menu h2{margin:4px 0}
+.roster{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:94%;max-width:720px}
+.card{padding:11px 5px;background:#171a28;border:1px solid #34384d;border-radius:14px;text-align:center;cursor:pointer}
+.card b{display:block;margin-bottom:5px;font-size:13px}.tag{font-size:9px;color:#b7b9c8}
+.selected{outline:2px solid #ff4f9a}
 #arena{position:relative;width:96%;height:90%;max-width:1000px;border:2px solid #363a51;border-radius:18px;background:linear-gradient(#161829,#10111a);overflow:hidden}
-.hp{position:absolute;top:12px;width:38%;height:20px;background:#302f3c;border-radius:12px;overflow:hidden}.bar{height:100%;background:#52e07a;width:100%}
-#pbar{left:3%}#ebar{right:3%}.name{position:absolute;top:37px;font-size:12px}.pn{left:3%}.en{right:3%}
-.fighter{position:absolute;bottom:28%;font-size:75px;transition:.12s}.p{left:17%}.e{right:17%}
+.hp{position:absolute;top:12px;width:38%;height:20px;background:#302f3c;border-radius:12px;overflow:hidden}
+.bar{height:100%;background:#52e07a;width:100%;transition:width .15s}
+#pbar{left:3%}#ebar{right:3%}
+.name{position:absolute;top:37px;font-size:12px}.pn{left:3%}.en{right:3%}
+.fighter{position:absolute;bottom:28%;font-size:70px;transition:.12s}.p{left:17%}.e{right:17%}
 #ground{position:absolute;bottom:25%;left:0;right:0;border-top:2px solid #454961}
 .controls{position:absolute;bottom:10px;left:10px;right:10px;display:flex;justify-content:space-between}
-.controls div{display:flex;gap:8px}.controls button{min-width:55px;height:48px}
-#owner{display:none;position:absolute;inset:0;background:#0b0c14ee;padding:20px;z-index:5}
-.panel{max-width:600px;margin:auto;background:#171a28;border:1px solid #3a3e54;border-radius:18px;padding:20px}
-</style></head>
-<body><div id="app">
-<header><h1>⚔️ Anime-Girl <span class="gold">Fighting</span></h1><div><span id="coins">Coins: 1000</span> <button id="ownerBtn">👑 Owner</button></div></header>
-<section id="menu"><h2>Choose Fighter</h2><div class="roster" id="roster"></div><button id="start">START FIGHT</button></section>
-<section id="fight" style="display:none"><div id="arena">
-<div id="pbar" class="hp"><div class="bar"></div></div><div id="ebar" class="hp"><div class="bar"></div></div>
-<div class="name pn" id="pname"></div><div class="name en" id="ename"></div>
-<div class="fighter p" id="pf">🌸</div><div class="fighter e" id="ef">👹</div><div id="ground"></div>
-<div class="controls"><div><button data-a="left">◀</button><button data-a="right">▶</button><button data-a="jump">▲</button></div><div><button data-a="block">🛡</button><button data-a="attack">⚔️</button><button data-a="special">✨</button></div></div>
-</div></section>
-<div id="owner"><div class="panel"><h2>👑 Owner Mode</h2><p>Local prototype admin panel.</p><button id="give">Give +500 Coins</button> <button id="heal">Restore HP</button> <button id="lockOwner">🔒 Lock Owner</button> <button id="close">Close</button><p id="ownerMsg"></p></div></div>
+.controls div{display:flex;gap:7px}.controls button{min-width:52px;height:48px;padding:5px}
+#owner{display:none;position:fixed;inset:0;background:#0b0c14ee;padding:20px;z-index:20}
+.panel{width:100%;max-width:560px;margin:auto;background:#171a28;border:1px solid #3a3e54;border-radius:18px;padding:20px}
+#ownerPass{width:100%;padding:12px;margin:10px 0;border:1px solid #44495e;border-radius:10px;background:#0d0e17;color:#fff;font-size:16px}
+#loginMsg{color:#ff7070;min-height:20px}#ownerMsg{color:#ffd45a;min-height:20px}
+#ownerTools{display:none}
+.ownerBtns{display:flex;flex-wrap:wrap;gap:8px}
+@media(max-width:520px){.roster{grid-template-columns:repeat(3,1fr)}.fighter{font-size:58px}.controls button{min-width:46px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+<h1>⚔️ Anime-Girl <span class="gold">Fighting</span></h1>
+<div><span id="coins">Coins: 1000</span><button id="ownerBtn">👑 Owner</button></div>
+</header>
+
+<section id="menu">
+<h2>Choose Fighter</h2>
+<div class="roster" id="roster"></div>
+<button id="start">START FIGHT</button>
+</section>
+
+<section id="fight" style="display:none">
+<div id="arena">
+<div id="pbar" class="hp"><div class="bar"></div></div>
+<div id="ebar" class="hp"><div class="bar"></div></div>
+<div class="name pn" id="pname"></div>
+<div class="name en" id="ename"></div>
+<div class="fighter p" id="pf">🌸</div>
+<div class="fighter e" id="ef">👹</div>
+<div id="ground"></div>
+<div class="controls">
+<div>
+<button data-a="left">◀</button>
+<button data-a="right">▶</button>
+<button data-a="jump">▲</button>
 </div>
+<div>
+<button data-a="block">🛡</button>
+<button data-a="attack">⚔️</button>
+<button data-a="special">✨</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+
+<div id="owner">
+<div class="panel">
+<div id="loginBox">
+<h2>👑 Owner Mode</h2>
+<p>Enter owner password:</p>
+<input id="ownerPass" type="password" placeholder="Owner password">
+<button id="login">🔓 Unlock Owner</button>
+<button id="cancelLogin">Cancel</button>
+<p id="loginMsg"></p>
+</div>
+
+<div id="ownerTools">
+<h2>👑 Owner Mode</h2>
+<p>Owner controls</p>
+<div class="ownerBtns">
+<button id="unlockAll">🔓 Unlock All</button>
+<button id="give">💰 +500 Coins</button>
+<button id="heal">❤️ Restore HP</button>
+<button id="lockOwner">🔒 Lock</button>
+<button id="close">Close</button>
+</div>
+<p id="ownerMsg"></p>
+</div>
+</div>
+</div>
+
 <script>
+(function(){
+"use strict";
+
 const chars=[
-["Makima","Chainsaw Man","🟥"],["Reze","Chainsaw Man","💣"],["Mikasa","Attack on Titan","⚔️"],["Nobara","Jujutsu Kaisen","🔨"],
-["Maki","Jujutsu Kaisen","🗡️"],["Sakura","Naruto","🌸"],["Yoruichi","Bleach","⚡"],["Shinobu","Demon Slayer","🦋"],
-["Mitsuri","Demon Slayer","💗"],["Erza","Fairy Tail","🛡️"],["Power","Chainsaw Man","🩸"],["Android 18","Dragon Ball","💫"]
+["Makima","Chainsaw Man","🟥"],["Reze","Chainsaw Man","💣"],
+["Mikasa","Attack on Titan","⚔️"],["Nobara","Jujutsu Kaisen","🔨"],
+["Maki","Jujutsu Kaisen","🗡️"],["Sakura","Naruto","🌸"],
+["Yoruichi","Bleach","⚡"],["Shinobu","Demon Slayer","🦋"],
+["Mitsuri","Demon Slayer","💗"],["Erza","Fairy Tail","🛡️"],
+["Power","Chainsaw Man","🩸"],["Android 18","Dragon Ball","💫"]
 ];
-const OWNER_PIN="2580"; // Change this PIN before publishing
-let ownerUnlocked=false, allUnlocked=false, selected=0, coins=1000, php=100, ehp=100, timer;
-const roster=document.querySelector("#roster");
-function renderRoster(){
-  roster.innerHTML="";
-  chars.forEach((c,i)=>{
-    let d=document.createElement("div");
-    d.className="card"+(i===selected?" selected":"");
-    const unlocked = allUnlocked || i < 2;
-    d.innerHTML=`<b>${unlocked?c[2]:"🔒"} ${c[0]}</b><span class="tag">${c[1]} • ${unlocked?"UNLOCKED":"LOCKED"}</span>`;
-    d.onclick=()=>{
-      if(!unlocked){ alert("🔒 This character is locked. Unlock it from Owner Mode."); return; }
-      selected=i;
-      document.querySelectorAll(".card").forEach(x=>x.classList.remove("selected"));
-      d.classList.add("selected");
-    };
-    roster.appendChild(d);
-  });
-}
-renderRoster();
-function start(){document.querySelector("#menu").style.display="none";document.querySelector("#fight").style.display="flex";document.querySelector("#pname").textContent=chars[selected][0];document.querySelector("#ename").textContent=chars[(selected+1)%chars.length][0];document.querySelector("#pf").textContent=chars[selected][2];document.querySelector("#ef").textContent=chars[(selected+1)%chars.length][2];php=ehp=100;draw();clearInterval(timer);timer=setInterval(()=>{if(ehp>0){ehp=Math.max(0,ehp-1);draw()}},1200)}
-function draw(){document.querySelector("#pbar .bar").style.width=php+"%";document.querySelector("#ebar .bar").style.width=ehp+"%";if(ehp<=0){clearInterval(timer);alert("🏆 You win!");document.querySelector("#fight").style.display="none";document.querySelector("#menu").style.display="flex"}}
-document.querySelector("#start").onclick=start;
-document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{let a=b.dataset.a,p=document.querySelector("#pf");if(a==="attack"){ehp=Math.max(0,ehp-10);p.style.transform="translateX(30px)";setTimeout(()=>p.style.transform="",120)}if(a==="special"){ehp=Math.max(0,ehp-25);p.style.transform="scale(1.18)";setTimeout(()=>p.style.transform="",160)}if(a==="jump")p.style.transform="translateY(-70px)";if(a==="left")p.style.left=Math.max(5,(parseInt(getComputedStyle(p).left)||17)-3)+"%";if(a==="right")p.style.left=Math.min(80,(parseInt(getComputedStyle(p).left)||17)+3)+"%";if(a==="block")p.style.opacity=".55";setTimeout(()=>p.style.opacity="1",250);draw()});
+
 const OWNER_PASSWORD="invincible";
-let ownerUnlocked=false;
+let ownerUnlocked=false,allUnlocked=false,selected=0,coins=1000,php=100,ehp=100,timer=null;
 
-document.querySelector("#ownerBtn").onclick=()=>{
-  document.querySelector("#owner").style.display="block";
-  document.querySelector("#loginBox").style.display=ownerUnlocked?"none":"block";
-  document.querySelector("#ownerTools").style.display=ownerUnlocked?"block":"none";
-  document.querySelector("#loginMsg").textContent="";
-};
+const $=id=>document.getElementById(id);
 
-document.querySelector("#cancelLogin").onclick=()=>{
-  document.querySelector("#owner").style.display="none";
-  document.querySelector("#ownerPass").value="";
-};
+function renderRoster(){
+const roster=$("roster");
+roster.innerHTML="";
+chars.forEach((c,i)=>{
+const d=document.createElement("div");
+d.className="card"+(i===selected?" selected":"");
+const unlocked=allUnlocked||i<2;
+d.innerHTML="<b>"+(unlocked?c[2]:"🔒")+" "+c[0]+"</b><span class='tag'>"+c[1]+" • "+(unlocked?"UNLOCKED":"LOCKED")+"</span>";
+d.addEventListener("click",function(){
+if(!unlocked){alert("🔒 This character is locked. Unlock it from Owner Mode.");return;}
+selected=i;
+document.querySelectorAll(".card").forEach(x=>x.classList.remove("selected"));
+d.classList.add("selected");
+});
+roster.appendChild(d);
+});
+}
 
-document.querySelector("#login").onclick=()=>{
-  const value=document.querySelector("#ownerPass").value;
-  if(value===OWNER_PASSWORD){
-    ownerUnlocked=true;
-    document.querySelector("#loginBox").style.display="none";
-    document.querySelector("#ownerTools").style.display="block";
-  }else{
-    document.querySelector("#loginMsg").textContent="❌ Incorrect password.";
-    document.querySelector("#ownerPass").value="";
-  }
-};
+function draw(){
+$("pbar").querySelector(".bar").style.width=php+"%";
+$("ebar").querySelector(".bar").style.width=ehp+"%";
+}
 
-document.querySelector("#unlockAll").onclick=()=>{
-  document.querySelectorAll(".card").forEach(card=>card.classList.add("selected"));
-  document.querySelector("#ownerMsg").textContent="🔓 All characters unlocked.";
-};
+function endFight(message){
+clearInterval(timer);timer=null;
+if(message)alert(message);
+$("fight").style.display="none";
+$("menu").style.display="flex";
+}
 
-document.querySelector("#close").onclick=()=>{
-  document.querySelector("#owner").style.display="none";
-  document.querySelector("#ownerPass").value="";
-};
+function start(){
+$("menu").style.display="none";
+$("fight").style.display="flex";
+$("pname").textContent=chars[selected][0];
+$("ename").textContent=chars[(selected+1)%chars.length][0];
+$("pf").textContent=chars[selected][2];
+$("ef").textContent=chars[(selected+1)%chars.length][2];
+php=100;ehp=100;draw();
+clearInterval(timer);
+timer=setInterval(function(){
+if(ehp>0){ehp=Math.max(0,ehp-1);draw();}
+},1200);
+}
 
-document.querySelector("#give").onclick=()=>{
-  coins+=500;
-  document.querySelector("#coins").textContent="Coins: "+coins;
-  document.querySelector("#ownerMsg").textContent="Added 500 coins.";
-};
+$("start").addEventListener("click",start);
 
-document.querySelector("#heal").onclick=()=>{
-  php=100;
-  draw();
-  document.querySelector("#ownerMsg").textContent="Player HP restored.";
-};draw();document.querySelector("#ownerMsg").textContent="Player HP restored."};
-</script></body></html>
+document.querySelectorAll("[data-a]").forEach(function(btn){
+btn.addEventListener("click",function(){
+const action=btn.dataset.a,player=$("pf");
+if(action==="attack")ehp=Math.max(0,ehp-10);
+if(action==="special")ehp=Math.max(0,ehp-25);
+if(action==="jump"){player.style.transform="translateY(-70px)";setTimeout(()=>player.style.transform="",300);}
+if(action==="left"){
+const x=parseFloat(player.style.left)||17;player.style.left=Math.max(5,x-3)+"%";
+}
+if(action==="right"){
+const x=parseFloat(player.style.left)||17;player.style.left=Math.min(80,x+3)+"%";
+}
+if(action==="block"){player.style.opacity=".55";setTimeout(()=>player.style.opacity="1",250);}
+if(action==="attack"||action==="special"){
+player.style.transform="translateX(25px) scale(1.05)";
+setTimeout(()=>player.style.transform="",120);
+}
+draw();
+if(ehp<=0)endFight("🏆 You win!");
+});
+});
+
+$("ownerBtn").addEventListener("click",function(){
+$("owner").style.display="block";
+$("loginBox").style.display=ownerUnlocked?"none":"block";
+$("ownerTools").style.display=ownerUnlocked?"block":"none";
+$("loginMsg").textContent="";
+$("ownerPass").value="";
+});
+
+$("login").addEventListener("click",function(){
+if($("ownerPass").value===OWNER_PASSWORD){
+ownerUnlocked=true;
+$("loginBox").style.display="none";
+$("ownerTools").style.display="block";
+$("loginMsg").textContent="";
+}else{
+$("loginMsg").textContent="❌ Incorrect password.";
+$("ownerPass").value="";
+}
+});
+
+$("cancelLogin").addEventListener("click",function(){
+$("owner").style.display="none";$("ownerPass").value="";
+});
+
+$("unlockAll").addEventListener("click",function(){
+allUnlocked=true;renderRoster();
+$("ownerMsg").textContent="🔓 All characters unlocked.";
+});
+
+$("give").addEventListener("click",function(){
+coins+=500;$("coins").textContent="Coins: "+coins;
+$("ownerMsg").textContent="💰 Added 500 coins.";
+});
+
+$("heal").addEventListener("click",function(){
+php=100;draw();$("ownerMsg").textContent="❤️ Player HP restored.";
+});
+
+$("lockOwner").addEventListener("click",function(){
+ownerUnlocked=false;
+$("ownerTools").style.display="none";
+$("loginBox").style.display="block";
+$("ownerPass").value="";
+$("ownerMsg").textContent="";
+});
+
+$("close").addEventListener("click",function(){
+$("owner").style.display="none";$("ownerPass").value="";
+});
+
+renderRoster();
+draw();
+})();
+</script>
+</body>
+</html>
